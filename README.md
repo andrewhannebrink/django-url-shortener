@@ -55,11 +55,11 @@ Requirements
 Set up
 ------
 
-$ virtualenv env
-$ sudo apt-get install python-pip
-$ pip install django
-$ pip install djangorestframework
-$ django-admin.py startproject url_shortener .
-$ python manage.py runserver
-   -open http://127.0.0.1:8000/ to check if django page is up
+virtualenv env
+sudo apt-get install python-pip
+pip install django
+pip install djangorestframework
+django-admin.py startproject url_shortener .
+python manage.py runserver
+  -open http://127.0.0.1:8000/ to check if django page is up
 
