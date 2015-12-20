@@ -1,44 +1,43 @@
 Requirements
 
--An endpoint that receives a URL and returns a new shortened URL
-   -Checks if URL exists in Short_URLs.short_url's or Custom_URLs.custom_url's
-   -if it does, updates existing Short_URL object's timestamp, and returns the existing shortened URL
-   -if it does not exist, creates a new Short_URL object, saves it with django orm
+1. An endpoint that receives a URL and returns a new shortened URL
+  1. Checks if URL exists in Short_URLs.short_url's or Custom_URLs.custom_url's
+  2. if it does, updates existing Short_URL object's timestamp, and returns the existing shortened URL
+  3. if it does not exist, creates a new Short_URL object, saves it with django orm
 
--An endpoint to retrieve the last 100 shortened URLs
-   -index db by timestamp
-   -return last 100 according to that index
+2. An endpoint to retrieve the last 100 shortened URLs
+  1. index db by timestamp
+  2. return last 100 according to that index
 
--An endpoint to retrieve the top 10 most popular shortened domains in the past month
-   -groups urls by domain and returns total of each (for the top ten)
+3. An endpoint to retrieve the top 10 most popular shortened domains in the past month
+  * groups urls by domain and returns total of each (for the top ten)
 
--An endpoint to retrieve the number of times a shortened URL has been visited.
-   -Checks if url exists in Short_URLs.short_urls or Custom_URLs.custom_urls
-   -If it does, note whether it exists specifically Short_URLs or Custom_URLs
-      -If it exists in Custom_URLs, look up the Custom_URL's foreign key and use that to look up the number of visits in Short_URLs
-      -If it exists in Short_URLs, look up the Short_URL's number_visits attribute
-   -If not, return 0, indicating 0 visits
+4. An endpoint to retrieve the number of times a shortened URL has been visited.
+  1. Checks if url exists in Short_URLs.short_urls or Custom_URLs.custom_urls
+  2. If it does, note whether it exists specifically Short_URLs or Custom_URLs
+    1. If it exists in Custom_URLs, look up the Custom_URL's foreign key and use that to look up the number of visits in Short_URLs
+    2. If it exists in Short_URLs, look up the Short_URL's number_visits attribute
+  3. If not, return 0, indicating 0 visits
 
--An endpoint to support the creation of custom URLs
-   -Checks if url exists in Short_URLs.short_urls or Custom_URLs.custom_urls
-   -If it exists in Short_URLS, dont make Custom_URL. Return error status
-   -If it exists in Custom_URLs, dont make Custom_URL. Return error status
-   -If it exists in neither table, make new Custom_URL, link to Short_URL as Foreign Key 
+5. An endpoint to support the creation of custom URLs
+  1. Checks if url exists in Short_URLs.short_urls or Custom_URLs.custom_urls
+    * If it exists in Short_URLS or Custom_URLs, dont make Custom_URL. Return error status
+    * If it exists in neither table, make new Custom_URL, link to Short_URL as Foreign Key 
 
--(My own endpoint(s)) Endpoints for visiting an shortened URL's
-   -If not api endpoint, then:
-      -checks if URL exists in Short_URLs or CustomURLs
-      -If so, returns (or even better, goes to) shortened url's long_url
-      -If not, returns message stating url does not yet exist 
+6. (My own endpoint(s)) Endpoints for visiting an shortened URL's
+  * If not api endpoint, then:
+    * checks if URL exists in Short_URLs or CustomURLs
+      * If so, returns (or even better, goes to) shortened url's long_url
+      * If not, returns message stating url does not yet exist 
    
 
--Utilize a relational database
-   -Model: Short_URL
-      -longURL (unique, primary key)
-      -domain
-      -short_url (unique and must not exist in Custom_URLs.custom_url's)
-      -number_visits (indexed on this column)
-      -last_time_stamp (another index on this column)
+* Utilize a relational database
+  *Model: Short_URL
+  * longURL (unique, primary key)
+  * domain
+  * short_url (unique and must not exist in Custom_URLs.custom_url's)
+  * number_visits (indexed on this column)
+  * last_time_stamp (another index on this column)
 
    -Model: Custom_URL
       -URL (Foreign-key on URL table)
