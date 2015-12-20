@@ -67,4 +67,6 @@ Set up
 5. $ django-admin.py startproject url_shortener .
 6. $ python manage.py runserver
   * open http://127.0.0.1:8000/ to check if django page is up
+7. $ python manage.py startapp short_urls
+
 
