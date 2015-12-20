@@ -69,4 +69,6 @@ Set up
   * open http://127.0.0.1:8000/ to check if django page is up
 7. $ python manage.py startapp short_urls
 8. $ python manage.py migrate
+9. $ python manage.py makemigrations short_urls
+
 
