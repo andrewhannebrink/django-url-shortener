@@ -6,7 +6,7 @@ Endpoints
 
 1. An endpoint that receives a URL and returns a new shortened URL
   * Checks if URL exists in Short_URLs.short_url's or Custom_URLs.custom_url's
-  * if it does, updates existing Short_URL object's timestamp, and returns the existing shortened URL
+  * if it does, returns the existing shortened URL
   * if it does not exist, creates a new Short_URL object, saves it with django orm
 
 2. An endpoint to retrieve the last 100 shortened URLs
@@ -68,5 +68,5 @@ Set up
 6. $ python manage.py runserver
   * open http://127.0.0.1:8000/ to check if django page is up
 7. $ python manage.py startapp short_urls
-
+8. $ python manage.py migrate
 
