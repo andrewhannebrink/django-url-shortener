@@ -10,13 +10,32 @@ import datetime
 #from urlparse import urlparse
 import tldextract
 
+# (2) api/last_hundred endpoint
+# API endpoint for checking the last 100 most recently shortened urls
+@api_view(['GET'])
 def last_hundred(request):
-   return HttpResponse('This is the api/last_hundred endpoint')
+    if request.method == 'GET':
+        ordered = Short_URL.objects.order_by('time_stamp')
+        if len(ordered) >= 100:
+            top = ordered[-100:].reverse()
+        else:
+            top = ordered.reverse()
+        l = len(top)
+        response = {'top': []}
+        for obj in top:
+            response['top'].append({
+                'long_url': obj.long_url,
+                'short_url': obj.short_url,
+                'time_stamp': obj.time_stamp
+            })
+        return Response(response, status=status.HTTP_200_OK)
+        
+
 
 def shortened_url_view(request):
    return HttpResponse('This url is not yet a shortened url')
 
-#/api/make_short endpoint
+# (1) /api/make_short endpoint
 # API endpoint for making a new shortened url given a long url
 @api_view(['POST'])
 def make_short(request):
@@ -50,6 +69,7 @@ def make_short(request):
             #return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(response, status=status.HTTP_201_CREATED)
         #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # makes random url string of length 6 
 def makeShortURL():

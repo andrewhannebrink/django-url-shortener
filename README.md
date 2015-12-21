@@ -73,4 +73,5 @@ Set up
 10. $ sudo pip install markdown
 11. $ sudo pip install django-filter
 12. $ sudo apt-get install sqlite3
+13. $ sudo pip install tldextract
 
