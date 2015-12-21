@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from short_urls.models import Short_URL, Custom_URL
 from short_urls.serializers import Short_URL_Serializer, Custom_URL_Serializer
+from django.db.models import Count
 import random
 import datetime
 #from urlparse import urlparse
@@ -30,8 +31,25 @@ def last_hundred(request):
             })
         return Response(response, status=status.HTTP_200_OK)
         
+# (3) api/domains endpoint
+# API Endpoint for retrieving the domains with the most associated shortened urls
+@api_view(['GET'])
+def domains(request):
+    if request.method == 'GET':
+        ordered = Short_URL.objects.values('domain').annotate(num_urls = Count('domain')).order_by('-num_urls')
+        if len(ordered) >= 10:
+            top = ordered[-10:] 
+        else:
+            top = ordered
+        l = len(top)
+        response = {'top': []}
+        for obj in top:
+            response['top'].append(obj)
+        return Response(response, status=status.HTTP_200_OK)
 
 
+# (6) \w* endpoint
+# API endpoint for redirecting to a long_url at a custom or short url 
 def shortened_url_view(request):
    return HttpResponse('This url is not yet a shortened url')
 
