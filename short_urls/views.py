@@ -8,7 +8,6 @@ from short_urls.serializers import Short_URL_Serializer, Custom_URL_Serializer
 from django.db.models import Count
 import random
 import datetime
-#from urlparse import urlparse
 import tldextract
 
 # (2) api/last_hundred endpoint
@@ -49,9 +48,16 @@ def domains(request):
 
 
 # (6) \w* endpoint
-# API endpoint for redirecting to a long_url at a custom or short url 
-def shortened_url_view(request):
-   return HttpResponse('This url is not yet a shortened url')
+# View for redirecting to a long_url at a custom or short url 
+def shortened_url_view(request, short_url=''):
+    if short_url == '':
+        return HttpResponse('Welcome to my url shortener')
+    else:
+        long_url_list = Short_URL.objects.filter(short_url = short_url)
+        if len(long_url_list) == 0:
+            return HttpResponse('This url is not yet shortened')
+        # If shortened url exists redirect to long_url
+        return HttpResponse('<meta http-equiv="refresh" content="0; URL=\'' + long_url_list[0].long_url + '\'" />)')
 
 # (1) /api/make_short endpoint
 # API endpoint for making a new shortened url given a long url
@@ -81,12 +87,7 @@ def make_short(request):
             short_url_obj.time_stamp = str(datetime.datetime.now())
             short_url_obj.save()
             response = {'message': 'long_url already exists in database...updated entry\'s time_stamp'}
-        #serializer = Short_URL_Serializer(data = request.data)
-        #if serializer.is_valid():
-        #    serializer.save()
-            #return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(response, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # makes random url string of length 6 
