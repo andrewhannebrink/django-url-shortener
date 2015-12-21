@@ -7,6 +7,7 @@ from short_urls.models import Short_URL, Custom_URL
 from short_urls.serializers import Short_URL_Serializer, Custom_URL_Serializer
 import random
 import datetime
+from urlparse import urlparse
 
 def last_hundred(request):
    return HttpResponse('This is the api/last_hundred endpoint')
@@ -14,6 +15,7 @@ def last_hundred(request):
 def shortened_url_view(request):
    return HttpResponse('This url is not yet a shortened url')
 
+#/api/make_short endpoint
 # API endpoint for making a new shortened url given a long url
 @api_view(['POST'])
 def make_short(request):
@@ -28,12 +30,13 @@ def make_short(request):
         if long_url_exists == False:
             long_url = request.data['long_url']
             short_url = makeShortURL()
-            domain = 'test.domain'
+            parsed_uri = urlparse( 'http://stackoverflow.com/questions/1234567/blah-blah-blah-blah' )
+            domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
             number_visits = 0
             time_stamp = str(datetime.datetime.now())
             new_url_obj = Short_URL.objects.create(long_url=long_url, short_url=short_url, domain=domain, time_stamp=time_stamp, number_visits=number_visits)
             new_url_obj.save()
-            response = {'short_url': short_url, 'message': 'success, Short_URL object created'}
+            response = {'short_url': short_url, 'domain': domain, 'message': 'success, Short_URL object created'}
         #If long_url already exists, respond with an appropriate message, and do nothing
         else:
             response = {'message': 'long_url already exists in database'}
