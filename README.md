@@ -4,7 +4,7 @@ Requirements
 Endpoints
 ---------
 
-1. An endpoint that receives a URL and returns a new shortened URL
+1. (api/make_short) An endpoint that receives a URL and returns a new shortened URL
   * Checks if URL exists in Short_URLs.short_url's or Custom_URLs.custom_url's
   * if it does, returns the existing shortened URL
   * if it does not exist, creates a new Short_URL object, saves it with django orm
@@ -70,5 +70,7 @@ Set up
 7. $ python manage.py startapp short_urls
 8. $ python manage.py migrate
 9. $ python manage.py makemigrations short_urls
+10. $ sudo pip install markdown
+11. $ sudo pip install django-filter
 
 
