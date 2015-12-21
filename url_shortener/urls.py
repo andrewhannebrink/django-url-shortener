@@ -16,10 +16,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from short_urls.models import Short_URL, Custom_URL
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'', include('short_urls.urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'', include('short_urls.urls')),
 ]
