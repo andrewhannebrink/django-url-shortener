@@ -1,0 +1,23 @@
+<h3>Welcome to my url shortener</h3>
+<h4>Short URL's</h4>
+<table>
+    {% for short in shorts %}
+        <tr>
+	    <td> {{ short.short_url }} </td>
+            <td> {{ short.domain }} </td>
+            <td> {{ short.long_url }} </td>
+        </tr>
+    {% endfor %}
+</table>
+<h4>Custom URL's</h4>
+<table>
+    {% for custom in customs %}
+        <tr>
+            <td> {{ custom.custom_url }} </td>
+            <td> {{ custom.short_url.short_url }} </td>
+            <td> {{ custom.short_url.domain }} </td>
+            <td> {{ custom.short_url.long_url }} </td>
+        </tr>
+    {% endfor %}
+</table>
+

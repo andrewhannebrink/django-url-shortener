@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.template import RequestContext, loader
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -133,20 +134,36 @@ def custom(request):
 # View for redirecting to a long_url at a custom or short url 
 def shortened_url_view(request, short_url=''):
     if short_url == '':
-        return HttpResponse('Welcome to my url shortener')
+        #TODO Make simple landing page
+        shorts = Short_URL.objects.all()
+        customs = Custom_URL.objects.all()
+        template = loader.get_template('index.html')
+        context = RequestContext(request, {
+            'shorts': shorts,
+            'customs': customs
+        })
+        return HttpResponse(template.render(context))
+        
     else:
         long_url_list = Short_URL.objects.filter(short_url = short_url)
-        if len(long_url_list) == 0:
+        custom_url_list = Custom_URL.objects.filter(custom_url = short_url)
+        if len(long_url_list) + len(custom_url_list) == 0:
             return HttpResponse('This url is not yet shortened')
         # If shortened url exists redirect to long_url with html meta tag
-        obj = long_url_list[0]
-        obj.number_visits += 1
-        obj.save()
+        elif len(long_url_list) > 0:
+            obj = long_url_list[0]
+            obj.number_visits += 1
+            obj.save()
+        elif len(custom_url_list) > 0:
+            obj = custom_url_list[0].short_url
+            obj.number_visits += 1
+            obj.save()
         return HttpResponse('<meta http-equiv="refresh" content="0; URL=\'' + obj.long_url + '\'" />)')
 
 
 # makes random url string of length 6 
 def makeShortURLString(banned_names = []):
+    banned_names.append('')
     poss = '0123456789abcdefghijklmnopqrstuvwxyz'
     l = len(poss)
     s = ''
