@@ -40,7 +40,10 @@ def make_short(request):
             response = {'short_url': short_url, 'domain': domain, 'message': 'success, Short_URL object created'}
         #If long_url already exists, respond with an appropriate message, and do nothing
         else:
-            response = {'message': 'long_url already exists in database'}
+            short_url_obj = Short_URL.objects.get(long_url = request.data['long_url'])
+            short_url_obj.time_stamp = str(datetime.datetime.now())
+            short_url_obj.save()
+            response = {'message': 'long_url already exists in database...updated entry\'s time_stamp'}
         #serializer = Short_URL_Serializer(data = request.data)
         #if serializer.is_valid():
         #    serializer.save()
