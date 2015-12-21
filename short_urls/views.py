@@ -98,6 +98,18 @@ def visits(request):
             response = {'message': 'the requested short url has not been created yet'}
             return Response(response, status=status.HTTP_200_OK)
 
+# (5) api/custom endpoint
+# API Endpoint for creating custom urls
+@api_view(['POST'])
+def custom(request):
+    if request.method == 'POST':
+        # Check that the custom url doesnt already exist, even as a randomly gnerated shortening
+        custom_url_list = Custom_URL.objects.filter(custom_url = custom_url)
+        short_url_list = Short_URL.objects.filter(custom_url = custom_url)
+        if (len(custom_url_list) + len(short_url_list)) > 0:
+            response = {'message': 'suggested custom url is already in use'}
+        else:
+            response = {
 
 # (6) \w* endpoint
 # View for redirecting to a long_url at a custom or short url 
