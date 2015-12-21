@@ -7,7 +7,8 @@ from short_urls.models import Short_URL, Custom_URL
 from short_urls.serializers import Short_URL_Serializer, Custom_URL_Serializer
 import random
 import datetime
-from urlparse import urlparse
+#from urlparse import urlparse
+import tldextract
 
 def last_hundred(request):
    return HttpResponse('This is the api/last_hundred endpoint')
@@ -30,8 +31,8 @@ def make_short(request):
         if long_url_exists == False:
             long_url = request.data['long_url']
             short_url = makeShortURL()
-            parsed_uri = urlparse( 'http://stackoverflow.com/questions/1234567/blah-blah-blah-blah' )
-            domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+            tld = tldextract.extract(long_url)
+            domain = tld.domain + '.' + tld.suffix
             number_visits = 0
             time_stamp = str(datetime.datetime.now())
             new_url_obj = Short_URL.objects.create(long_url=long_url, short_url=short_url, domain=domain, time_stamp=time_stamp, number_visits=number_visits)
