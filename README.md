@@ -38,14 +38,14 @@ Miscellaneous Reqs
 ------------------
 
 * Utilize a relational database
-  *Model: Short_URL
+  *Model: Short_URL (1:1 mapping of short urls to long urls)
   * longURL (unique, primary key)
   * domain
   * short_url (unique and must not exist in Custom_URLs.custom_url's)
   * number_visits (indexed on this column)
   * last_time_stamp (another index on this column)
 
-  * Model: Custom_URL
+  * Model: Custom_URL (Many:1) mapping to Short_URL objects
     * URL (Foreign-key on URL table)
     * custom_url (primary_key, must be unique and not exist in Short_URLs.short_url's)
 
