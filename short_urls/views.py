@@ -10,54 +10,6 @@ import random
 import datetime
 import tldextract
 
-# (2) api/last_hundred endpoint
-# API endpoint for checking the last 100 most recently shortened urls
-@api_view(['GET'])
-def last_hundred(request):
-    if request.method == 'GET':
-        ordered = Short_URL.objects.order_by('time_stamp')
-        if len(ordered) >= 100:
-            top = ordered[-100:].reverse()
-        else:
-            top = ordered.reverse()
-        l = len(top)
-        response = {'top': []}
-        for obj in top:
-            response['top'].append({
-                'long_url': obj.long_url,
-                'short_url': obj.short_url,
-                'time_stamp': obj.time_stamp
-            })
-        return Response(response, status=status.HTTP_200_OK)
-        
-# (3) api/domains endpoint
-# API Endpoint for retrieving the domains with the most associated shortened urls
-@api_view(['GET'])
-def domains(request):
-    if request.method == 'GET':
-        ordered = Short_URL.objects.values('domain').annotate(num_urls = Count('domain')).order_by('-num_urls')
-        if len(ordered) >= 10:
-            top = ordered[-10:] 
-        else:
-            top = ordered
-        l = len(top)
-        response = {'top': []}
-        for obj in top:
-            response['top'].append(obj)
-        return Response(response, status=status.HTTP_200_OK)
-
-
-# (6) \w* endpoint
-# View for redirecting to a long_url at a custom or short url 
-def shortened_url_view(request, short_url=''):
-    if short_url == '':
-        return HttpResponse('Welcome to my url shortener')
-    else:
-        long_url_list = Short_URL.objects.filter(short_url = short_url)
-        if len(long_url_list) == 0:
-            return HttpResponse('This url is not yet shortened')
-        # If shortened url exists redirect to long_url
-        return HttpResponse('<meta http-equiv="refresh" content="0; URL=\'' + long_url_list[0].long_url + '\'" />)')
 
 # (1) /api/make_short endpoint
 # API endpoint for making a new shortened url given a long url
@@ -88,6 +40,79 @@ def make_short(request):
             short_url_obj.save()
             response = {'message': 'long_url already exists in database...updated entry\'s time_stamp'}
         return Response(response, status=status.HTTP_201_CREATED)
+
+
+# (2) api/last_hundred endpoint
+# API endpoint for checking the last 100 most recently shortened urls
+@api_view(['GET'])
+def last_hundred(request):
+    if request.method == 'GET':
+        ordered = Short_URL.objects.order_by('time_stamp')
+        if len(ordered) >= 100:
+            top = ordered[-100:].reverse()
+        else:
+            top = ordered.reverse()
+        l = len(top)
+        response = {'top': []}
+        for obj in top:
+            response['top'].append({
+                'long_url': obj.long_url,
+                'short_url': obj.short_url,
+                'time_stamp': obj.time_stamp
+            })
+        return Response(response, status=status.HTTP_200_OK)
+        
+
+# (3) api/domains endpoint
+# API Endpoint for retrieving the domains with the most associated shortened urls
+@api_view(['GET'])
+def domains(request):
+    if request.method == 'GET':
+        ordered = Short_URL.objects.values('domain').annotate(num_urls = Count('domain')).order_by('-num_urls')
+        if len(ordered) >= 10:
+            top = ordered[-10:] 
+        else:
+            top = ordered
+        l = len(top)
+        response = {'top': []}
+        for obj in top:
+            response['top'].append(obj)
+        return Response(response, status=status.HTTP_200_OK)
+
+
+# (4) api/visits endpoint
+# API Endpoint for retrieving how many times a url has been visited given its short_url or custom_url string
+@api_view(['POST'])
+def visits(request):
+    if request.method == 'POST':
+        short_url = request.data['short_url']
+        filt = Short_URL.objects.filter(short_url = short_url)
+        if len(filt) > 0:
+            obj = filt[0]
+            response = {
+                'short_url': obj.short_url,
+                'number_visits': obj.number_visits
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            response = {'message': 'the requested short url has not been created yet'}
+            return Response(response, status=status.HTTP_200_OK)
+
+
+# (6) \w* endpoint
+# View for redirecting to a long_url at a custom or short url 
+def shortened_url_view(request, short_url=''):
+    if short_url == '':
+        return HttpResponse('Welcome to my url shortener')
+    else:
+        long_url_list = Short_URL.objects.filter(short_url = short_url)
+        if len(long_url_list) == 0:
+            return HttpResponse('This url is not yet shortened')
+        # If shortened url exists redirect to long_url with html meta tag
+        obj = long_url_list[0]
+        obj.number_visits += 1
+        obj.save()
+        return HttpResponse('<meta http-equiv="refresh" content="0; URL=\'' + obj.long_url + '\'" />)')
 
 
 # makes random url string of length 6 
