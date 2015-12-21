@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from short_urls.models import Short_URL, Custom_URL
-from short_urls.serializers import Short_URL_Serializer, Custom_URL_Serializer
 from django.db.models import Count
 import random
 import datetime

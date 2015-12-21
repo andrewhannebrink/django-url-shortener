@@ -4,19 +4,25 @@ Requirements
 Endpoints
 ---------
 
-1. (api/make_short) An endpoint that receives a URL and returns a new shortened URL
+1. An endpoint that receives a URL and returns a new shortened URL
+  * /api/make_short (POST)
+  * REQUEST EXAMPLE: { "long_url": "http://www.github.com/andrewhannebrink" }
   * Checks if URL exists in Short_URLs.short_url's or Custom_URLs.custom_url's
   * if it does, returns the existing shortened URL
   * if it does not exist, creates a new Short_URL object, saves it with django orm
 
 2. An endpoint to retrieve the last 100 shortened URLs
+  * /api/last_hundred (GET)
   * index db by timestamp
   * return last 100 according to that index
 
 3. An endpoint to retrieve the top 10 most popular shortened domains in the past month
+  * /api/domains (GET)
   * groups urls by domain and returns total of each (for the top ten)
 
 4. An endpoint to retrieve the number of times a shortened URL has been visited.
+  * /api/visits (POST)
+  * REQUEST EXAMPLE: { "short_url": "f843h2" }
   * Checks if url exists in Short_URLs.short_urls or Custom_URLs.custom_urls
   * If it does, note whether it exists specifically Short_URLs or Custom_URLs
     * If it exists in Custom_URLs, look up the Custom_URL's foreign key and use that to look up the number of visits in Short_URLs
@@ -24,11 +30,14 @@ Endpoints
   * If not, return 0, indicating 0 visits
 
 5. An endpoint to support the creation of custom URLs
+  * /api/custom (POST)
+  * REQUEST EXAMPLE: { "custom_url": "face", "long_url": "https://www.facebook.com" }
   * Checks if url exists in Short_URLs.short_urls or Custom_URLs.custom_urls
     * If it exists in Short_URLS or Custom_URLs, dont make Custom_URL. Return error status
     * If it exists in neither table, make new Custom_URL, link to Short_URL as Foreign Key 
 
 6. (My own endpoint(s)) Endpoints for visiting an shortened URL's
+  * /\w\* (GET)
   * If not api endpoint, then:
     * checks if URL exists in Short_URLs or CustomURLs
       * If so, returns (or even better, goes to) shortened url's long_url

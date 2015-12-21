@@ -11,7 +11,7 @@
 <table>
     {% for short in shorts %}
         <tr>
-	    <td> {{ short.short_url }} </td>
+	    <td><a href="{{ short.short_url }}">{{ short.short_url }}</a></td>
             <td> {{ short.domain }} </td>
             <td> {{ short.long_url }} </td>
         </tr>
@@ -21,8 +21,8 @@
 <table>
     {% for custom in customs %}
         <tr>
-            <td> {{ custom.custom_url }} </td>
-            <td> {{ custom.short_url.short_url }} </td>
+            <td><a href="{{ custom.custom_url }}">{{ custom.custom_url }}</a></td>
+            <td><a href="{{ custom.short_url.short_url }}">{{ custom.short_url.short_url }}</td>
             <td> {{ custom.short_url.domain }} </td>
             <td> {{ custom.short_url.long_url }} </td>
         </tr>
