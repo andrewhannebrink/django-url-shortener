@@ -55,8 +55,9 @@ def makeShortURL():
     for i in range(6):
         ri = random.randint(0, l - 1)
         s += poss[ri]
-    # If short_url already exists, make a new short_url, else, return s
+    # If short_url already exists (even as a custom url), make a new short_url, else, return s
     short_url_count = Short_URL.objects.filter(short_url = s).count()
-    if short_url_count > 0:
+    custom_url_count = Custom_URL.objects.filter(custom_url = s).count()
+    if (short_url_count + custom_url_count) > 0:
         return makeShortURL() 
     return s 
